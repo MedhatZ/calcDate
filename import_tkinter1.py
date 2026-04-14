@@ -63,7 +63,7 @@ def calculate():
     month = month_entry.get().strip()
     year = year_entry.get().strip()
 
-    # -------- VALIDATION (FIXED & INSIDE FUNCTION) --------
+    # -------- VALIDATION --------
     if not name:
         result_label.config(text="⚠️ Please enter your name!")
         result_frame.tkraise()
@@ -113,11 +113,10 @@ def calculate():
         result_frame.tkraise()
         return
 
-    # Real date check
     try:
         birth = datetime(y, m, d)
     except:
-        result_label.config(text="⚠️ This date does not exist (like 31 Feb)!")
+        result_label.config(text="⚠️ This date does not exist!")
         result_frame.tkraise()
         return
 
@@ -135,6 +134,16 @@ def calculate():
         years -= 1
         months += 12
 
+    # -------- AGE MESSAGE --------
+    if years <= 13:
+        age_message = "🧒 You're a kid, enjoy your time"
+    elif 14 <= years <= 18:
+        age_message = "😎 Teenager mode activated"
+    elif 19 <= years <= 30:
+        age_message = "😄 Welcome to adult life"
+    else:
+        age_message = "👴 hallo old people"
+
     is_birthday = (today.day == d and today.month == m)
 
     next_birthday = datetime(today.year, m, d)
@@ -149,7 +158,29 @@ def calculate():
         "🎁 A surprise is waiting for you",
         "😊 Someone will make you smile",
         "💪 You will achieve something great",
-        "🌈 Happiness is coming your way"
+        "🌈 Happiness is coming your way",
+        "🔥 Today is full of energy — use it wisely",
+        "🌟 A great opportunity may come today",
+        "💖 Love and kindness will surround you",
+        "🎯 Stay focused — success is close",
+        "😎 Today will be calm and peaceful",
+        "🚀 Big progress is coming your way",
+        "🎉 Something exciting might happen today",
+        "🧠 A smart decision will help you a lot",
+        "🌸 A fresh start is waiting for you",
+        "💡 A new idea could change your day",
+        "🎵 Enjoy the little moments today",
+        "🌞 Positivity will guide your path",
+        "🤝 You may meet someone important today",
+        "⚡ Be ready — something unexpected is coming",
+        "🏆 You’re closer to your goals than you think",
+        "💫 Magic moments are hidden in your day",
+        "📈 Today is a good day for improvement",
+        "🌊 Go with the flow and things will work out",
+        "🛤️ Your path is becoming clearer today",
+        "🎨 Creativity will shine through you",
+        "🔑 You might find an important answer today",
+        "🌍 Today could open new doors for you"
     ]
 
     fortune = random.choice(fortunes)
@@ -161,6 +192,7 @@ def calculate():
 
     text += (
         f"🎯 Age: {years} years, {months} months, {days} days\n\n"
+        f"🧠 Stage: {age_message}\n\n"
         f"⏳ Days until birthday: {days_left}\n\n"
         f"🌟 {fortune}"
     )

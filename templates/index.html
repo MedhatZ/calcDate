@@ -1,51 +1,174 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Zodiac App</title>
+
     <link rel="stylesheet" href="/static/style.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #0f0f1a;
+            color: white;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-top: 20px;
+            font-size: 32px;
+        }
+
+        .subtitle {
+            opacity: 0.7;
+            margin-bottom: 20px;
+        }
+
+        .form-card, .card {
+            background: #1a1a2e;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.4);
+        }
+
+        input {
+            padding: 10px;
+            margin: 5px;
+            border-radius: 10px;
+            border: none;
+            width: 90%;
+            max-width: 200px;
+        }
+
+        .row {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            background: #6c5ce7;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #5a4bd6;
+        }
+
+        .error-box {
+            background: #ff4d4d;
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .info p {
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
+        .fortune-box {
+            margin-top: 15px;
+            padding: 10px;
+            background: #2d2d44;
+            border-radius: 10px;
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+    </style>
 </head>
+
 <body>
 
 <div class="container">
-    <h1>🌟 Zodiac Age & Fortune</h1>
 
-    <form method="POST">
-        <input name="name" placeholder="👤 Name" required>
-        <input name="day" placeholder="📅 Day" required>
-        <input name="month" placeholder="📆 Month" required>
-        <input name="year" placeholder="🗓️ Year" required>
-        <button type="submit">✨ Calculate</button>
-    </form>
+    <h1>🌟 Zodiac Age & Fortune</h1>
+    <p class="subtitle">Enter your details and discover your vibe ✨</p>
+
+    <!-- FORM -->
+    <div class="form-card">
+        <form method="POST">
+
+            <input name="name" placeholder="👤 Your Name" required>
+
+            <div class="row">
+                <input name="day" placeholder="📅 Day" required>
+                <input name="month" placeholder="📆 Month" required>
+                <input name="year" placeholder="🗓️ Year" required>
+            </div>
+
+            <button type="submit">✨ Calculate My Fortune</button>
+        </form>
+    </div>
 
     <!-- ERROR -->
     {% if error %}
-    <p class="error">{{ error }}</p>
+        <div class="error-box">
+            ⚠️ {{ error }}
+        </div>
     {% endif %}
 
     <!-- RESULT -->
     {% if result %}
-    <div class="card" style="border-color: {{ result.color }}">
+    <div class="card" style="border: 2px solid {{ result.color }}">
 
         {% if result.is_birthday %}
-        <h2 style="color: {{ result.color }}">
-            🎉🎂 HAPPY BIRTHDAY {{ result.name }} 🎂🎉
-        </h2>
-        <script>
-            startConfetti(); // 🎉 تشغيل الكونفيتي
-        </script>
+            <h2 style="color: {{ result.color }}">
+                🎉🎂 HAPPY BIRTHDAY {{ result.name }} 🎂🎉
+            </h2>
+
+            <script>
+                if (typeof startConfetti === "function") {
+                    startConfetti();
+                }
+            </script>
         {% else %}
-        <h2 style="color: {{ result.color }}">
-            👋 Hi {{ result.name }}
-        </h2>
+            <h2 style="color: {{ result.color }}">
+                👋 Hi {{ result.name }}
+            </h2>
         {% endif %}
 
-        <p>🎯 Age: {{ result.years }} years, {{ result.months }} months, {{ result.days }} days</p>
+        <div class="info">
 
-        <p>🔮 Zodiac: <strong>{{ result.zodiac }}</strong></p>
+            <p>🎯 <strong>Age:</strong>
+                {{ result.years }} years,
+                {{ result.months }} months,
+                {{ result.days }} days
+            </p>
 
-        <p>⏳ Days until birthday: {{ result.days_left }}</p>
+            <!-- 🔥 NEW AGE MESSAGE -->
+            <p>🧠 <strong>Message:</strong> {{ result.age_message }}</p>
 
-        <p class="fortune">🌟 {{ result.fortune }}</p>
+            <p>🔮 <strong>Zodiac:</strong> {{ result.zodiac }}</p>
+
+            <p>⏳ <strong>Days until birthday:</strong> {{ result.days_left }}</p>
+
+        </div>
+
+        <div class="fortune-box">
+            🌟 {{ result.fortune }}
+        </div>
 
     </div>
     {% endif %}

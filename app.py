@@ -4,6 +4,8 @@ import random
 
 app = Flask(__name__)
 
+
+# -------- ZODIAC FUNCTION --------
 def get_zodiac(m, d):
     if (m == 3 and d >= 21) or (m == 4 and d <= 19):
         return "Aries"
@@ -30,6 +32,19 @@ def get_zodiac(m, d):
     else:
         return "Pisces"
 
+
+# -------- AGE MESSAGE --------
+def get_age_message(years):
+    if years <= 13:
+        return "🧒 You're a kid, enjoy your time"
+    elif 14 <= years <= 18:
+        return "😎 Teenager mode activated"
+    elif 19 <= years <= 30:
+        return "😄 Welcome to adult life"
+    else:
+        return "👴 Hello old people"
+
+
 @app.route("/", methods=["GET", "POST"])
 def home():
     result = None
@@ -44,33 +59,28 @@ def home():
 
             # -------- VALIDATION --------
             if not name:
-                error = "⚠️ Please enter your name!"
-                return render_template("index.html", error=error)
+                return render_template("index.html", error="⚠️ Please enter your name!")
 
-            if not day or not month or not year:
-                error = "⚠️ Fill all fields!"
-                return render_template("index.html", error=error)
+            if not (day and month and year):
+                return render_template("index.html", error="⚠️ Fill all fields!")
 
             if not (day.isdigit() and month.isdigit() and year.isdigit()):
-                error = "⚠️ Date must be numbers!"
-                return render_template("index.html", error=error)
+                return render_template("index.html", error="⚠️ Date must be numbers!")
 
             d, m, y = int(day), int(month), int(year)
 
             if not (1 <= d <= 31 and 1 <= m <= 12):
-                error = "⚠️ Invalid day or month!"
-                return render_template("index.html", error=error)
+                return render_template("index.html", error="⚠️ Invalid day or month!")
 
             if y > datetime.now().year:
-                error = "⚠️ Year in future!"
-                return render_template("index.html", error=error)
+                return render_template("index.html", error="⚠️ Year in future!")
 
-            # Real date check
+            # validate real date
             birth = datetime(y, m, d)
 
-            # -------- CALCULATION --------
             today = datetime.now()
 
+            # -------- AGE CALCULATION --------
             years = today.year - y
             months = today.month - m
             days = today.day - d
@@ -78,11 +88,15 @@ def home():
             if days < 0:
                 months -= 1
                 days += 30
+
             if months < 0:
                 years -= 1
                 months += 12
 
-            # Birthday
+            # -------- AGE MESSAGE --------
+            age_message = get_age_message(years)
+
+            # -------- BIRTHDAY CHECK --------
             is_birthday = (today.day == d and today.month == m)
 
             next_birthday = datetime(today.year, m, d)
@@ -91,6 +105,7 @@ def home():
 
             days_left = (next_birthday - today).days
 
+            # -------- ZODIAC --------
             zodiac = get_zodiac(m, d)
 
             colors = {
@@ -117,11 +132,13 @@ def home():
                 "🌈 Happiness is near!"
             ]
 
+            # -------- RESULT --------
             result = {
                 "name": name,
                 "years": years,
                 "months": months,
                 "days": days,
+                "age_message": age_message,
                 "zodiac": zodiac,
                 "fortune": random.choice(fortunes),
                 "color": colors[zodiac],
