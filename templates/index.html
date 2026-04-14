@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Zodiac App</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>🌟 Zodiac Age & Fortune</h1>
+
+    <form method="POST">
+        <input name="name" placeholder="👤 Name" required>
+        <input name="day" placeholder="📅 Day" required>
+        <input name="month" placeholder="📆 Month" required>
+        <input name="year" placeholder="🗓️ Year" required>
+        <button type="submit">✨ Calculate</button>
+    </form>
+
+    <!-- ERROR -->
+    {% if error %}
+    <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <!-- RESULT -->
+    {% if result %}
+    <div class="card" style="border-color: {{ result.color }}">
+
+        {% if result.is_birthday %}
+        <h2 style="color: {{ result.color }}">
+            🎉🎂 HAPPY BIRTHDAY {{ result.name }} 🎂🎉
+        </h2>
+        <script>
+            startConfetti(); // 🎉 تشغيل الكونفيتي
+        </script>
+        {% else %}
+        <h2 style="color: {{ result.color }}">
+            👋 Hi {{ result.name }}
+        </h2>
+        {% endif %}
+
+        <p>🎯 Age: {{ result.years }} years, {{ result.months }} months, {{ result.days }} days</p>
+
+        <p>🔮 Zodiac: <strong>{{ result.zodiac }}</strong></p>
+
+        <p>⏳ Days until birthday: {{ result.days_left }}</p>
+
+        <p class="fortune">🌟 {{ result.fortune }}</p>
+
+    </div>
+    {% endif %}
+
+</div>
+
+<!-- CONFETTI -->
+<canvas id="confetti"></canvas>
+<script src="/static/script.js"></script>
+
+</body>
+</html>
